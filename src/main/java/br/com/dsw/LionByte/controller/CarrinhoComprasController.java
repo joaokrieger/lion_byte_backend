@@ -75,14 +75,27 @@ public class CarrinhoComprasController {
 
     @PostMapping
     public CarrinhoCompras salvarCarrinhoCompras(@RequestBody Map<String, Object> requestBody) {
-        CarrinhoCompras carrinho = new CarrinhoCompras();
         
+        CarrinhoCompras carrinho = new CarrinhoCompras();
+        int quantidade = 0;
+
+        // Verifica se a quantidade foi fornecida
+        if (requestBody.containsKey("quantidade")) {
+            quantidade = Integer.parseInt(requestBody.get("quantidade").toString());
+            carrinho.setQuantidade(quantidade);
+        }
+
         // Verifica se o id_produto foi fornecido
         if (requestBody.containsKey("id_produto")) {
             Long id_produto = Long.parseLong(requestBody.get("id_produto").toString());
             Produto produto = produtoRepository.findById(id_produto)
                     .orElseThrow(() -> new RuntimeException("Produto não encontrado com o ID: " + id_produto));
             carrinho.setProduto(produto);
+
+            
+            //Removendo quantidade comprada
+            produto.setQuantidade(produto.getQuantidade() - quantidade);
+            produtoRepository.save(produto);
         }
 
         // Verifica se o id_usuario foi fornecido
@@ -93,18 +106,23 @@ public class CarrinhoComprasController {
             carrinho.setUsuario(usuario);
         }
 
-        // Verifica se a quantidade foi fornecida
-        if (requestBody.containsKey("quantidade")) {
-            int quantidade = Integer.parseInt(requestBody.get("quantidade").toString());
-            carrinho.setQuantidade(quantidade);
-        }
-
         return carrinhoRepository.save(carrinho);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluirCarrinho(@PathVariable Long id) {
+        
+        // Carregando Carrinho
+        CarrinhoCompras carrinhoCompras = carrinhoRepository.findById(id).
+            orElseThrow(() -> new RuntimeException("Carrinho não encontrado com o ID: " + id));
+
+        // Reatribuíndo quantidade de itens comprada
+        Produto produto =carrinhoCompras.getProduto();
+        produto.setQuantidade(produto.getQuantidade() + carrinhoCompras.getQuantidade());
+
+        produtoRepository.save(produto);
         carrinhoRepository.deleteById(id);
+        
         return ResponseEntity.noContent().build();
     }
 }
