@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,11 +21,14 @@ import br.com.dsw.LionByte.repository.UsuarioRepository;
 
 @RestController
 @RequestMapping("/usuarios")
-@CrossOrigin(origins = "http://localhost:3000")
 public class UsuarioController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    public UsuarioController(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
 
     @GetMapping
     public List<Usuario> listarUsuarios() {
@@ -34,11 +36,10 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public Usuario criarUsuario(@RequestBody Usuario usuario) {
+    public Usuario salvarUsuario(@RequestBody Usuario usuario) {
         return usuarioRepository.save(usuario);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{id}")
     public Usuario getUsuario(@PathVariable Long id) throws Exception{
         Optional<Usuario> usuario = usuarioRepository.findById(id);
@@ -54,7 +55,6 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/login")
     public Map<String, Object> realizarLogin(@RequestBody Map<String, String> loginParams) {
         String email = loginParams.get("email");

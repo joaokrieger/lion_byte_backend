@@ -19,7 +19,6 @@ import br.com.dsw.LionByte.repository.FornecedorRepository;
 
 @RestController
 @RequestMapping("/fornecedores")
-@CrossOrigin(origins = "http://localhost:3000")
 public class FornecedorController {
 
     @Autowired
@@ -35,11 +34,10 @@ public class FornecedorController {
     }
 
     @PostMapping
-    public Fornecedor criarFornecedor(@RequestBody Fornecedor fornecedor) {
+    public Fornecedor salvarFornecedor(@RequestBody Fornecedor fornecedor) {
         return fornecedorRepository.save(fornecedor);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{id}")
     public Fornecedor getFornecedor(@PathVariable Long id) throws Exception{
         Optional<Fornecedor> fornecedor = fornecedorRepository.findById(id);

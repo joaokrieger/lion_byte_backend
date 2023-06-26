@@ -19,7 +19,6 @@ import br.com.dsw.LionByte.repository.CategoriaRepository;
 
 @RestController
 @RequestMapping("/categorias")
-@CrossOrigin(origins = "http://localhost:3000")
 public class CategoriaController {
 
     @Autowired
@@ -34,7 +33,6 @@ public class CategoriaController {
         return categoriaRepository.findAll();
     }
     
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{id}")
     public Categoria getCategoria(@PathVariable Long id) throws Exception{
         Optional<Categoria> categoria = categoriaRepository.findById(id);
@@ -45,7 +43,7 @@ public class CategoriaController {
     }
 
     @PostMapping
-    public Categoria criarCategoria(@RequestBody Categoria Categoria) {
+    public Categoria salvarCategoria(@RequestBody Categoria Categoria) {
         return categoriaRepository.save(Categoria);
     }
 

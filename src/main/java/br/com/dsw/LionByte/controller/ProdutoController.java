@@ -25,7 +25,6 @@ import br.com.dsw.LionByte.repository.ProdutoRepository;
 
 @RestController
 @RequestMapping("/produtos")
-@CrossOrigin(origins = "http://localhost:3000")
 public class ProdutoController {
 
     @Autowired
@@ -37,12 +36,18 @@ public class ProdutoController {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
+    public ProdutoController(ProdutoRepository produtoRepository, FornecedorRepository fornecedorRepository,
+            CategoriaRepository categoriaRepository) {
+        this.produtoRepository = produtoRepository;
+        this.fornecedorRepository = fornecedorRepository;
+        this.categoriaRepository = categoriaRepository;
+    }
+
     @GetMapping
     public List<Produto> listarProdutos() {
         return produtoRepository.findAll();
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{id}")
     public Produto getProduto(@PathVariable Long id) throws Exception{
         Optional<Produto> produto = produtoRepository.findById(id);
@@ -53,7 +58,7 @@ public class ProdutoController {
     }
 
     @PostMapping
-    public Produto criarProduto(@RequestBody Map<String, Object> requestBody) {
+    public Produto salvarProduto(@RequestBody Map<String, Object> requestBody) {
         Produto produto = new Produto();
 
         // Verifica se o id_produto foi fornecido

@@ -27,7 +27,6 @@ import br.com.dsw.LionByte.repository.UsuarioRepository;
 
 @RestController
 @RequestMapping("/carrinho")
-@CrossOrigin(origins = "http://localhost:3000")
 public class CarrinhoComprasController {
 
     @Autowired
@@ -39,7 +38,12 @@ public class CarrinhoComprasController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    public CarrinhoComprasController(CarrinhoRepository carrinhoRepository, ProdutoRepository produtoRepository,UsuarioRepository usuarioRepository) {
+        this.carrinhoRepository = carrinhoRepository;
+        this.produtoRepository = produtoRepository;
+        this.usuarioRepository = usuarioRepository;
+    }
+
     @GetMapping
     public List<Map<String, Object>> listarCarrinho(@RequestParam("id_usuario") Long id_usuario) {
 
@@ -70,9 +74,8 @@ public class CarrinhoComprasController {
         return carrinhos;
     }
 
-
     @PostMapping
-    public CarrinhoCompras criarCarrinhoCompras(@RequestBody Map<String, Object> requestBody) {
+    public CarrinhoCompras salvarCarrinhoCompras(@RequestBody Map<String, Object> requestBody) {
         CarrinhoCompras carrinho = new CarrinhoCompras();
         
         // Verifica se o id_produto foi fornecido

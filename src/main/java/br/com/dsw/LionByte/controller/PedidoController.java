@@ -27,7 +27,6 @@ import br.com.dsw.LionByte.repository.UsuarioRepository;
 
 @RestController
 @RequestMapping("/pedidos")
-@CrossOrigin(origins = "http://localhost:3000")
 public class PedidoController {
 
     @Autowired
@@ -38,6 +37,12 @@ public class PedidoController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    public PedidoController(PedidoRepository pedidoRepository, CarrinhoRepository carrinhoRepository,UsuarioRepository usuarioRepository) {
+        this.pedidoRepository = pedidoRepository;
+        this.carrinhoRepository = carrinhoRepository;
+        this.usuarioRepository = usuarioRepository;
+    }
 
     @GetMapping("/{id}")
     public List<CarrinhoCompras> getCarrinhoByPedido(@PathVariable Long id) throws Exception{
@@ -61,7 +66,7 @@ public class PedidoController {
     }
 
     @PostMapping
-    public Pedido criarPedido(@RequestBody Map<String, Object> requestBody) {
+    public Pedido salvarPedido(@RequestBody Map<String, Object> requestBody) {
         Pedido pedido = new Pedido();
         
         pedido.setStatus("Realizado");
@@ -97,7 +102,6 @@ public class PedidoController {
         return ResponseEntity.noContent().build();
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/atender/{id_pedido}")
     public void atenderPedido(@PathVariable("id_pedido") Long id_pedido) throws Exception {
         
